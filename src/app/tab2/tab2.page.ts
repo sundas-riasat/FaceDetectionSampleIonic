@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {ApiService} from '../api.service';
+import {NavController, Platform} from '@ionic/angular';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-tab2',
@@ -7,6 +10,17 @@ import { Component } from '@angular/core';
 })
 export class Tab2Page {
 
-  constructor() {}
+
+  url = '';
+  constructor( private apiService: ApiService, private platform: Platform, private nav: NavController, private router: Router) {
+    this.platform.backButton.subscribeWithPriority(0, () => {
+      this.nav.navigateRoot('');
+    });
+  }
+
+  setURL(){
+    this.apiService.setURL(this.url);
+    this.router.navigateByUrl('/tabs/tab1');
+  }
 
 }
