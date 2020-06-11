@@ -52,26 +52,31 @@ export class Tab1Page implements OnInit {
 
     public initDetection(canvasOverlayNe) {
         const win: any = window;
+        const constraints = {
+            audio: false,
+            video: {
+                width: { exact: 1280 },
+                height: { exact: 720 },
+            }
+        };
         if (win.navigator) {
-            navigator.getUserMedia({video: true},
+            navigator.getUserMedia(constraints,
                 (stream) => {
                     const overlayContext = canvasOverlayNe.getContext('2d');
                     //
                     const {width, height} =  stream.getTracks()[0].getSettings();
+                    console.log(width, height);
                     canvasOverlayNe.style.position = 'absolute';
                     canvasOverlayNe.style.top = '0px';
                     canvasOverlayNe.style.zIndex = '100001';
                     canvasOverlayNe.style.display = 'block';
-                    overlayContext.strokeStyle = '#CC0000';
-                    overlayContext.strokeRect(50, 50, 300, 300);
                     const video = document.querySelector('video');
                     video.srcObject = stream;
                     this.setShowVideo();
-                    const htracker = new headtrackr.Tracker();
+                    const htracker = new headtrackr.Tracker({detectionInterval: 50});
                     const canvas = document.querySelector('canvas');
                     htracker.init(video, canvas);
                     htracker.start();
-
                     document.addEventListener('facetrackingEvent', (event: any) => {
                         if (!this.isMenuOpen) {
                             // clear canvas
@@ -79,20 +84,19 @@ export class Tab1Page implements OnInit {
                             //  once we have stable tracking, draw rectangle
 
                             if (event.detection === 'CS') {
-                                // overlayContext.translate(event.x, event.y);
-                                // overlayContext.rotate(event.angle - (3.14 / 2));
+                                overlayContext.translate(event.x, event.y);
+                                overlayContext.rotate(event.angle - (3.14 / 2));
                                 overlayContext.strokeStyle = '#00CC00';
-                                overlayContext.strokeRect(50, 50, 300, 300);
-                                // overlayContext.rotate((3.14 / 2) - event.angle);
-                                // overlayContext.translate(-event.x, -event.y);
+                                overlayContext.strokeRect(event.x, event.y, event.width, event.height);
+                                overlayContext.rotate((3.14 / 2) - event.angle);
+                                overlayContext.translate(-event.x, -event.y);
                                 if (this.allowTakePhoto) {
                                     this.takePhoto();
                                     this.allowTakePhoto = false;
                                     setTimeout(() => {
                                         this.allowTakePhoto = true;
-                                        overlayContext.strokeStyle = '#CC0000';
-                                        overlayContext.strokeRect(50, 50, 300, 300);
-                                    }, 3000);
+                                    }, 2000);
+
                                 }
                             }
                         }
@@ -153,13 +157,13 @@ export class Tab1Page implements OnInit {
     base64ToArrayBuffer(base64, w, h) {
         const startTime = (new Date()).getTime();
         let endTime;
-        this.apiService.postImage(base64, w, h).subscribe((x: any) => {
+        this.apiService.postImage(base64, w, h)?.subscribe((x: any) => {
             // this.presentToast(JSON.stringify(x.message) );
         }, err => {
             if (!err.error.text.toString().includes('Error')) {
-                // this.presentToast(err.error.text);
-                endTime = (new Date()).getTime();
-                this.presentToast('Took ' + (endTime - startTime) + 'ms');
+                this.presentToast(err.error.text);
+                // endTime = (new Date()).getTime();
+                // this.presentToast('Took ' + (endTime - startTime) + 'ms');
             }
         });
 

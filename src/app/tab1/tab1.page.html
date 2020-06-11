@@ -1,39 +1,37 @@
-
 <div class="ion-page" id="main">
-<ion-header [translucent]="true" >
-  <ion-toolbar color="--header-black" style=" box-shadow: 0px 3px 3px 3px rgba(0,0,0,0.1);">
-    <ion-buttons slot="start">
-      <ion-menu-button color="white"></ion-menu-button>
-    </ion-buttons>
-    <ion-title>
-      Camera
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+    <ion-header [translucent]="true">
+        <ion-toolbar color="--header-black" style=" box-shadow: 0px 3px 3px 3px rgba(0,0,0,0.1);">
+            <ion-buttons slot="start">
+                <ion-menu-button color="white"></ion-menu-button>
+            </ion-buttons>
+            <ion-title>
+                Camera
+            </ion-title>
+        </ion-toolbar>
+    </ion-header>
 
-<ion-content padding >
- <div >
-   <canvas id="compare" [height]="height" [width]="width" style="display:none"></canvas>
-   <video style="display: none;" id="video" [height]="height" [width]="width" autoplay loop ></video>
-   <canvas [height]="width" [width]="width" #overlay ></canvas>
-   <canvas  [height]="height" [width]="width" #image style="opacity: 0; position: absolute;"></canvas>
- </div>
-
-
-</ion-content>
+    <ion-content padding>
+        <div style="height: 100%;">
+            <canvas id="compare" [height]="height" [width]="width" style="display:none"></canvas>
+            <video style="display: none;" id="video" [height]="height" [width]="width" autoplay loop></video>
+            <canvas [height]="width" [width]="width" #overlay></canvas>
+            <canvas [height]="height" [width]="width" #image style="opacity: 0; position: absolute;"></canvas>
+        </div>
+    </ion-content>
 </div>
 
 
 <ion-menu side="start" menuId="first" contentId="main" (ionDidOpen)="menuOpened()" (ionDidClose)="menuClosed()">
-  <ion-header  style=" box-shadow: none;">
-    <ion-toolbar  style=" box-shadow: none;" color="light">
-      <ion-title>Menu</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <a href="/tabs/tab2" style="text-decoration: none; color: #3b3b3b;">
-    <ion-item style="padding-top: 10px;padding-bottom: 10px;">
-      Set API URL
-    </ion-item></a>
-  </ion-content>
+    <ion-header style=" box-shadow: none;">
+        <ion-toolbar style=" box-shadow: none;" color="light">
+            <ion-title>Menu</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-content>
+        <a href="/tabs/tab2" style="text-decoration: none; color: #3b3b3b;">
+            <ion-item style="padding-top: 10px;padding-bottom: 10px;">
+                Set API URL
+            </ion-item>
+        </a>
+    </ion-content>
 </ion-menu>
