@@ -10,14 +10,18 @@
         </ion-toolbar>
     </ion-header>
 
-    <ion-content padding>
-        <div id="detector" style="height: 100%;border: 5px solid red;">
+    <ion-content scroll-y="false" padding>
+        <div id="detector" style="height: 100%; overflow: hidden;">
             <canvas id="compare" [height]="height" [width]="width" style="display:none"></canvas>
-            <video style="display: none;"  id="video" [height]="height" [width]="width" autoplay loop></video>
+            <video  style="display: none;"  id="video" [height]="height" [width]="width" autoplay loop></video>
             <canvas [height]="height" [width]="width" #overlay></canvas>
-            <canvas [height]="height" [width]="width" #image style="opacity: 0; position: absolute;"></canvas>
+<!--            <canvas [height]="height" [width]="width" id="canv"></canvas>-->
+            <canvas  [height]="height" [width]="width" #image style="opacity: 0; position: absolute;"></canvas>
+<!--            <p>{{text}}</p>-->
             <div id="hider" style="height: 100%; width: 100%; background-color: black; position: absolute;left: 0; top: 0px;"></div>
         </div>
+        <button (click)="takePhoto()" style="height: 100%; width: 100%; background-color:transparent; opacity: 0; position: absolute;left: 0; bottom: 0px; z-index: 10000000000;"> xyd</button>
+
     </ion-content>
 </div>
 
