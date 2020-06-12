@@ -157,41 +157,22 @@ export class Tab1Page implements OnInit {
     }
 
     takePhoto() {
-        this.total = 0;
-        var min = 0;
-        var max = 0;
         this.presentToast('Recognizing...');
-        for (let i = 0; i < 50; i++) {
-            var start = Date.now();
-            const canvas = this.canvasImage.nativeElement;
-            const videoGet = document.querySelector('video');
-            canvas.width = 270;
-            canvas.height = 360;
-            canvas.getContext('2d').drawImage(videoGet, 0, 0, 270, 360);
-            const img = canvas.toDataURL('image/jpeg', 1.0);
-            this.imageSrc = img;
-            this.apiService.postImage(img, canvas.width, canvas.height)?.subscribe((x: any) => {
-            }, err => {
-                // if (!err.error.text.toString().includes('Error')) {
-                //     this.presentToast(err.error.text);
-                // } else {
-                //     this.presentToast('Not recognized');
-                // }
-            });
-            var end = Date.now();
-            if (i === 0) {
-                min = max = (end - start);
+        const canvas = this.canvasImage.nativeElement;
+        const videoGet = document.querySelector('video');
+        canvas.width = 270;
+        canvas.height = 360;
+        canvas.getContext('2d').drawImage(videoGet, 0, 0, 270, 360);
+        const img = canvas.toDataURL('image/jpeg', 1.0);
+        this.imageSrc = img;
+        this.apiService.postImage(img, canvas.width, canvas.height)?.subscribe((x: any) => {
+        }, err => {
+            if (!err.error.text.toString().includes('Error')) {
+                this.presentToast(err.error.text);
             } else {
-                if ((end - start) < min) {
-                    min = (end - start);
-                }
-                if ((end - start) > max) {
-                    max = (end - start);
-                }
+                this.presentToast('Not recognized');
             }
-            this.total += (end - start);
-        }
-        this.presentToast('Average: ' + (this.total / 50).toString() + ' Min: ' + min + ' Max: '+ max);
+        });
     }
 
     setURL() {
@@ -201,7 +182,7 @@ export class Tab1Page implements OnInit {
     async presentToast(text: string) {
         const toaster = await this.toast.create({
             message: text,
-            duration: 4000,
+            duration: 2000,
             position: 'bottom'
         });
 
