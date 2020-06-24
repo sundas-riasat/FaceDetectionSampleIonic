@@ -15,6 +15,8 @@ export class Tab1Page implements OnInit {
     @Input() name: string;
     public width = window.innerWidth;    // width of photo which will be captured
     public height = window.innerHeight;     // height of photo which will be captured
+    public vWidth;
+    public vHeight;
     public imageSrc = '';
     public text = '';
     public showVideo = false;
@@ -47,21 +49,35 @@ export class Tab1Page implements OnInit {
     init(canvasOverlayNe) {
         this.platform.ready().then(() => {
             if (this.platform.is('cordova')) {
-                this.handleCameraPermission(() => {
-                    this.initDetection(canvasOverlayNe);
+                this.handleCameraPermission().then((data: any) => {
+                    if (data.hasPermission) {
+                        console.log('have permission');
+                        this.initDetection(canvasOverlayNe);
+                    } else {
+                        this.presentToast('You did not allow necessary permissions');
+                    }
                 });
             }
-            this.initDetection(canvasOverlayNe);
+            // this.initDetection(canvasOverlayNe);
         });
     }
 
     public initDetection(canvasOverlayNe) {
+
+        let vidW, vidH; 
+        if ( Math.floor(this.height / this.width) <= 1 ){
+            vidW = 960;
+            vidH = 720;
+        } else {
+            vidW = 1280;
+            vidH = 720;
+        }
         const win: any = window;
         const constraints = {
             audio: false,
             video: {
-                width: {exact: 1280},
-                height: {exact: 720},
+                width: {exact: vidW},
+                height: {exact: vidH},
             }
         };
         if (win.navigator) {
@@ -74,6 +90,9 @@ export class Tab1Page implements OnInit {
                     canvasOverlayNe.style.display = 'block';
                     const video = document.querySelector('video');
                     video.srcObject = stream;
+                    let {width, height} = stream.getTracks()[0].getSettings();
+                    this.vWidth = width;
+                    this.vHeight = height;
                     this.setShowVideo();
                     const htracker = new headtrackr.Tracker({
                         detectionInterval: 50,
@@ -144,26 +163,27 @@ export class Tab1Page implements OnInit {
         this.isMenuOpen = false;
     }
 
-    public handleCameraPermission(cb) {
-        this.androidPermissions.requestPermissions([
+    public handleCameraPermission() {
+        return this.androidPermissions.requestPermissions([
             this.androidPermissions.PERMISSION.CAMERA,
             this.androidPermissions.PERMISSION.MODIFY_AUDIO_SETTINGS,
             this.androidPermissions.PERMISSION.RECORD_AUDIO
-        ]).then((data: any) => {
-            if (data.hasPermission) {
-                console.log('have permission');
-            }
-        });
+        ]);
     }
 
     takePhoto() {
         this.presentToast('Recognizing...');
         const canvas = this.canvasImage.nativeElement;
         const videoGet = document.querySelector('video');
-        canvas.width = 270;
-        canvas.height = 360;
-        canvas.getContext('2d').drawImage(videoGet, 0, 0, 270, 360);
-        const img = canvas.toDataURL('image/jpeg', 1.0);
+        // canvas.height = ( this.vWidth / 3 < 200 || this.vHeight / 3 < 200 ) ? this.vWidth / 2 : this.vWidth / 3;
+        // canvas.width = ( this.vWidth / 3 < 200 || this.vHeight / 3 < 200  ) ? this.vHeight / 2 : this.vHeight / 3;
+        canvas.height = this.vWidth;
+        canvas.width =  this.vHeight;
+        let canvasContext = canvas.getContext('2d');
+        canvasContext.translate(canvas.width, 0);
+        canvasContext.scale(-1, 1);
+        canvas.getContext('2d').drawImage(videoGet, 0, 0, canvas.width, canvas.height);
+        const img = canvas.toDataURL('image/jpeg', 0.8);
         this.imageSrc = img;
         this.apiService.postImage(img, canvas.width, canvas.height)?.subscribe((x: any) => {
         }, err => {

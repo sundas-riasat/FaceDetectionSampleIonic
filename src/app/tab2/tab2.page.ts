@@ -16,6 +16,7 @@ export class Tab2Page {
     this.platform.backButton.subscribeWithPriority(0, () => {
       this.nav.navigateRoot('');
     });
+    this.url = apiService.getURL();
   }
 
   setURL(){

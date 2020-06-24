@@ -2,5 +2,8 @@ video{
   //height: 100%;
   background-color: black;
   width: 100% !important;
+  transform: rotateY(180deg);
+  -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+  -moz-transform:rotateY(180deg); /* Firefox */
 }
 

@@ -13,7 +13,7 @@
     <ion-content scroll-y="false" padding>
         <div id="detector" style="height: 100%; overflow: hidden;">
             <canvas id="compare" [height]="height" [width]="width" style="display:none"></canvas>
-            <video  style="display: none;"  id="video" [height]="height" [width]="width" autoplay loop></video>
+            <video  style="display: none;width:100%;"  id="video" [height]="height" [width]="width" autoplay loop></video>
             <canvas [height]="height" [width]="width" #overlay></canvas>
 <!--            <canvas [height]="height" [width]="width" id="canv"></canvas>-->
             <canvas  [height]="height" [width]="width" #image style="opacity: 0; position: absolute;"></canvas>

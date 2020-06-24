@@ -27,5 +27,9 @@ export class ApiService {
         this.url = url;
         localStorage.setItem('url', this.url);
     }
+    
+    getURL(){
+        return this.url;
+    }
 
 }
